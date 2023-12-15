@@ -4,7 +4,9 @@
 module decode_stage(
     input clk,
     input reset_n,
-    input [31:0] instruction
+    input [31:0] instruction,
+    output logic [31:0] data1,
+    output logic [31:0] data2    
 );
 
     logic [31:0] rf_read_data1;
@@ -42,5 +44,9 @@ module decode_stage(
         .read1_data(rf_read_data1),
         .read2_data(rf_read_data2)        
     );
+    
+    
+    assign data1 = rf_read_data1;
+    assign data2 = rf_read_data2;
     
 endmodule
