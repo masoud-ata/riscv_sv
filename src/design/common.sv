@@ -22,7 +22,13 @@ package common;
         logic [31:0] data2;
     } id_ex_type;
     
+
+    typedef struct packed
+    {
+        logic [31:0] data;
+    } ex_mem_type;
     
+        
     typedef struct packed
     {
         logic [6:0] funct7;

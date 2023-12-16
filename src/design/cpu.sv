@@ -18,8 +18,11 @@ module cpu(
     
     logic [31:0] execute_result;
     
+    logic [31:0] memory_result;
+    
     if_id_type if_id_reg;
     id_ex_type id_ex_reg;
+    ex_mem_type ex_mem_reg;
     
    
     always_ff @(posedge clk) begin
@@ -28,6 +31,8 @@ module cpu(
         
         id_ex_reg.data1 <= decode_data1;
         id_ex_reg.data2 <= decode_data2;
+        
+        ex_mem_reg.data <= execute_result;
     end
 
 
@@ -40,7 +45,7 @@ module cpu(
     );
     
     
-    fetch_stage inst_fetch(
+    fetch_stage inst_fetch_stage(
         .clk(clk), 
         .reset_n(reset_n),
         .address(program_mem_address),
@@ -48,7 +53,7 @@ module cpu(
     );
     
     
-    decode_stage inst_decode(
+    decode_stage inst_decode_stage(
         .clk(clk), 
         .reset_n(reset_n),    
         .instruction(if_id_reg.instruction),
@@ -56,12 +61,21 @@ module cpu(
         .data2(decode_data2)
     );
     
-    execute_stage inst_execute(
+    
+    execute_stage inst_execute_stage(
         .clk(clk), 
         .reset_n(reset_n),
         .data1(id_ex_reg.data1),
         .data2(id_ex_reg.data2),
         .result(execute_result)             
+    );
+    
+    
+    mem_stage inst_mem_stage(
+        .clk(clk), 
+        .reset_n(reset_n),
+        .data(ex_mem_reg.data),
+        .data_out(memory_result)
     );
 
 endmodule
