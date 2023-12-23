@@ -20,19 +20,32 @@ module cpu(
     
     logic [31:0] memory_result;
     
+    logic [31:0] wb_result;
+    
     if_id_type if_id_reg;
     id_ex_type id_ex_reg;
     ex_mem_type ex_mem_reg;
+    mem_wb_type mem_wb_reg;
     
    
     always_ff @(posedge clk) begin
-        if_id_reg.pc <= program_mem_address;
-        if_id_reg.instruction <= program_mem_read_data;
-        
-        id_ex_reg.data1 <= decode_data1;
-        id_ex_reg.data2 <= decode_data2;
-        
-        ex_mem_reg.data <= execute_result;
+        if (!reset_n) begin
+            if_id_reg <= '0;
+            id_ex_reg <= '0;
+            ex_mem_reg <= '0;
+            mem_wb_reg <= '0;
+        end
+        else begin
+            if_id_reg.pc <= program_mem_address;
+            if_id_reg.instruction <= program_mem_read_data;
+            
+            id_ex_reg.data1 <= decode_data1;
+            id_ex_reg.data2 <= decode_data2;
+            
+            ex_mem_reg.data <= execute_result;
+            
+            mem_wb_reg.data <= memory_result;
+        end
     end
 
 
@@ -57,8 +70,12 @@ module cpu(
         .clk(clk), 
         .reset_n(reset_n),    
         .instruction(if_id_reg.instruction),
-        .data1(decode_data1),
-        .data2(decode_data2)
+        .write_en(1'b0),
+        .write_id(0),        
+        .write_data(wb_result),
+        .read_data1(decode_data1),
+        .read_data2(decode_data2),
+        .is_write_back()
     );
     
     
@@ -78,4 +95,6 @@ module cpu(
         .data_out(memory_result)
     );
 
+    assign wb_result = mem_wb_reg.data;
+    
 endmodule
