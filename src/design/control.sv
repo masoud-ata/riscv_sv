@@ -23,19 +23,23 @@ module control(
         
         if ({instruction.funct7, instruction.funct3, instruction.opcode} == ADD_INSTRUCTION) begin
             control.alu_op = ALU_ADD;
+            control.encoding = R_TYPE;
             control.reg_write = 1'b1;
         end
         else if ({instruction.funct7, instruction.funct3, instruction.opcode} == SUB_INSTRUCTION) begin
             control.alu_op = ALU_SUB;
+            control.encoding = R_TYPE;
             control.reg_write = 1'b1;
         end
         else if ({instruction.funct3, instruction.opcode} == ADDI_INSTRUCTION) begin
             control.alu_op = ALU_ADD;
+            control.encoding = I_TYPE;
             control.reg_write = 1'b1;
             control.alu_src = 1'b1;        
         end
         else if ({instruction.funct3, instruction.opcode} == LW_INSTRUCTION) begin
             control.alu_op = ALU_ADD;
+            control.encoding = I_TYPE;
             control.alu_src = 1'b1;
             control.mem_read = 1'b1;
             control.reg_write = 1'b1;
@@ -43,11 +47,13 @@ module control(
         end   
         else if ({instruction.funct3, instruction.opcode} == SW_INSTRUCTION) begin
             control.alu_op = ALU_ADD;
+            control.encoding = S_TYPE;
             control.alu_src = 1'b1;
             control.mem_write = 1'b1;  
         end                    
         else if ({instruction.funct3, instruction.opcode} == BEQ_INSTRUCTION) begin
             control.alu_op = ALU_SUB;
+            control.encoding = B_TYPE;
             control.is_branch = 1'b1;  
         end            
     end

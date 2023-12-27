@@ -9,9 +9,21 @@ package common;
     } alu_op_type;
     
     
+    typedef enum logic [2:0]
+    {
+        R_TYPE,
+        I_TYPE,
+        S_TYPE,
+        B_TYPE,
+        U_TYPE,
+        J_TYPE
+    } encoding_type;
+    
+    
     typedef struct packed
     {
         alu_op_type alu_op;
+        encoding_type encoding;
         logic alu_src;
         logic mem_read;
         logic mem_write ;
