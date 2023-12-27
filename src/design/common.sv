@@ -1,27 +1,17 @@
 package common;
 
-    enum logic [2:0] 
+    typedef enum logic [2:0] 
     {
         ALU_AND = 3'b000,
         ALU_OR = 3'b001,
         ALU_ADD = 3'b010,
-        ALU_SUB = 3'b110
-    } alu_op;
-    
-
-    typedef enum logic [6:0] 
-    {
-        R_TYPE = 7'b0110011,
-        ADDI = 7'b0010011,
-        LOAD = 7'b0000011,
-        STORE = 7'b0100011,
-        B_TYPE = 7'b1100011
-    } opcode_type;
+        ALU_SUB = 3'b011
+    } alu_op_type;
     
     
     typedef struct packed
     {
-        logic [2:0] alu_op;
+        alu_op_type alu_op;
         logic alu_src;
         logic mem_read;
         logic mem_write ;
@@ -38,7 +28,7 @@ package common;
         logic [4:0] rs1;
         logic [2:0] funct3;
         logic [4:0] rd;
-        opcode_type opcode;
+        logic [6:0] opcode;
     } instruction_type;
     
         
@@ -68,4 +58,4 @@ package common;
         logic [31:0] data;
     } mem_wb_type;
 
-endpackage;
+endpackage
