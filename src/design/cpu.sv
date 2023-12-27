@@ -15,6 +15,7 @@ module cpu(
     
     logic [31:0] decode_data1;
     logic [31:0] decode_data2;
+    control_type decode_control;
     
     logic [31:0] execute_result;
     
@@ -41,6 +42,7 @@ module cpu(
             
             id_ex_reg.data1 <= decode_data1;
             id_ex_reg.data2 <= decode_data2;
+            id_ex_reg.control <= decode_control;
             
             ex_mem_reg.data <= execute_result;
             
@@ -84,6 +86,7 @@ module cpu(
         .reset_n(reset_n),
         .data1(id_ex_reg.data1),
         .data2(id_ex_reg.data2),
+        .control(id_ex_reg.control),
         .result(execute_result)             
     );
     
@@ -95,6 +98,15 @@ module cpu(
         .data_out(memory_result)
     );
 
+
+    control inst_control(
+        .clk(clk), 
+        .reset_n(reset_n), 
+        .instruction(if_id_reg.instruction),
+        .control(decode_control)
+    );
+    
+    
     assign wb_result = mem_wb_reg.data;
     
 endmodule

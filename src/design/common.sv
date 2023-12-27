@@ -9,6 +9,28 @@ package common;
     } alu_op;
     
 
+    typedef enum logic [6:0] 
+    {
+        R_TYPE = 7'b0110011,
+        ADDI = 7'b0010011,
+        LOAD = 7'b0000011,
+        STORE = 7'b0100011,
+        B_TYPE = 7'b1100011
+    } opcode_type;
+    
+    
+    typedef struct packed
+    {
+        logic [2:0] alu_op;
+        logic alu_src;
+        logic mem_read;
+        logic mem_write ;
+        logic reg_write;
+        logic mem_to_reg;
+        logic is_branch;
+    } control_type;
+    
+    
     typedef struct packed
     {
         logic [6:0] funct7;
@@ -16,7 +38,7 @@ package common;
         logic [4:0] rs1;
         logic [2:0] funct3;
         logic [4:0] rd;
-        logic [6:0] opcode;
+        opcode_type opcode;
     } instruction_type;
     
         
@@ -31,6 +53,7 @@ package common;
     {
         logic [31:0] data1;
         logic [31:0] data2;
+        control_type control;
     } id_ex_type;
     
 
