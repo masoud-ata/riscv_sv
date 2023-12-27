@@ -55,6 +55,7 @@ package common;
     {
         logic [31:0] data1;
         logic [31:0] data2;
+        logic [31:0] immediate_data;
         control_type control;
     } id_ex_type;
     
@@ -70,4 +71,15 @@ package common;
         logic [31:0] data;
     } mem_wb_type;
 
+
+    function [31:0] immediate_extension(instruction_type instruction, encoding_type inst_encoding);
+        case (inst_encoding)
+            I_TYPE: immediate_extension = { {20{instruction.funct7[6]}}, {instruction.funct7, instruction.rs2} };
+            S_TYPE: immediate_extension = { {20{instruction.funct7[6]}}, {instruction.funct7, instruction.rd} };
+            B_TYPE: immediate_extension = 
+                { {20{instruction.funct7[6]}}, {instruction.funct7[6], instruction.rd[0], instruction.funct7[5:0], instruction.rd[4:1]} };
+            default: immediate_extension = { {20{instruction.funct7[6]}}, {instruction.funct7, instruction.rs2} };
+        endcase 
+    endfunction
+    
 endpackage

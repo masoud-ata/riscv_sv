@@ -8,6 +8,7 @@ module execute_stage(
     input reset_n,
     input [31:0] data1,
     input [31:0] data2,
+    input [31:0] immediate_data,
     input control_type control,
     output logic [31:0] result
 );
