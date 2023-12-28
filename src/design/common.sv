@@ -53,6 +53,7 @@ package common;
     
     typedef struct packed
     {
+        logic [5:0] reg_rd_id;
         logic [31:0] data1;
         logic [31:0] data2;
         logic [31:0] immediate_data;
@@ -62,13 +63,17 @@ package common;
 
     typedef struct packed
     {
+        logic [5:0] reg_rd_id;
         logic [31:0] data;
+        control_type control;
     } ex_mem_type;
     
     
     typedef struct packed
     {
+        logic [5:0] reg_rd_id;
         logic [31:0] data;
+        control_type control;
     } mem_wb_type;
 
 

@@ -10,27 +10,17 @@ module decode_stage(
     input logic write_en,
     input logic [5:0] write_id,
     input logic [31:0] write_data,
+    output logic [5:0] reg_rd_id,
     output logic [31:0] read_data1,
     output logic [31:0] read_data2,
     output logic [31:0] immediate_data,
-    output control_type control_signals,
-    output logic is_write_back
+    output control_type control_signals
 );
 
     logic [31:0] rf_read_data1;
     logic [31:0] rf_read_data2;
     
     control_type controls;
-    
-
-    always_ff @(posedge clk) begin
-        if (!reset_n) begin
-            
-        end
-        else begin
-            
-        end 
-    end
         
 
     register_file rf_inst(
@@ -53,7 +43,8 @@ module decode_stage(
         .control(controls)
     );
     
-    
+   
+    assign reg_rd_id = instruction.rd;
     assign read_data1 = rf_read_data1;
     assign read_data2 = rf_read_data2;
     assign immediate_data = immediate_extension(instruction, controls.encoding);

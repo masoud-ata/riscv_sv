@@ -13,16 +13,21 @@ module cpu(
     logic [31:0] program_mem_write_data = 0; 
     logic [31:0] program_mem_read_data;
     
+    logic [5:0] decode_reg_rd_id;
     logic [31:0] decode_data1;
     logic [31:0] decode_data2;
     logic [31:0] decode_immediate_data;
     control_type decode_control;
     
     logic [31:0] execute_result;
+    control_type execute_control;
     
     logic [31:0] memory_result;
+    control_type memory_control;
     
+    logic [5:0] wb_reg_rd_id;
     logic [31:0] wb_result;
+    logic wb_write_back_en;    
     
     if_id_type if_id_reg;
     id_ex_type id_ex_reg;
@@ -41,14 +46,19 @@ module cpu(
             if_id_reg.pc <= program_mem_address;
             if_id_reg.instruction <= program_mem_read_data;
             
+            id_ex_reg.reg_rd_id <= decode_reg_rd_id;
             id_ex_reg.data1 <= decode_data1;
             id_ex_reg.data2 <= decode_data2;
             id_ex_reg.immediate_data <= decode_immediate_data;
             id_ex_reg.control <= decode_control;
             
+            ex_mem_reg.reg_rd_id <= id_ex_reg.reg_rd_id;
             ex_mem_reg.data <= execute_result;
+            ex_mem_reg.control<= execute_control;
             
+            mem_wb_reg.reg_rd_id <= ex_mem_reg.reg_rd_id;
             mem_wb_reg.data <= memory_result;
+            mem_wb_reg.control <= memory_control;
         end
     end
 
@@ -74,14 +84,14 @@ module cpu(
         .clk(clk), 
         .reset_n(reset_n),    
         .instruction(if_id_reg.instruction),
-        .write_en(1'b0),
-        .write_id(0),        
+        .write_en(wb_write_back_en),
+        .write_id(wb_reg_rd_id),        
         .write_data(wb_result),
+        .reg_rd_id(decode_reg_rd_id),
         .read_data1(decode_data1),
         .read_data2(decode_data2),
         .immediate_data(decode_immediate_data),
-        .control_signals(decode_control),        
-        .is_write_back()
+        .control_signals(decode_control)
     );
     
     
@@ -91,7 +101,8 @@ module cpu(
         .data1(id_ex_reg.data1),
         .data2(id_ex_reg.data2),
         .immediate_data(id_ex_reg.immediate_data),
-        .control(id_ex_reg.control),
+        .control_in(id_ex_reg.control),
+        .control_out(execute_control),
         .result(execute_result)             
     );
     
@@ -100,10 +111,14 @@ module cpu(
         .clk(clk), 
         .reset_n(reset_n),
         .data(ex_mem_reg.data),
+        .control_in(ex_mem_reg.control),
+        .control_out(memory_control),
         .data_out(memory_result)
     );
 
 
+    assign wb_reg_rd_id = mem_wb_reg.reg_rd_id;
     assign wb_result = mem_wb_reg.data;
+    assign wb_write_back_en = mem_wb_reg.control.reg_write;
     
 endmodule
