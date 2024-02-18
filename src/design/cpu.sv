@@ -19,10 +19,12 @@ module cpu(
     logic [31:0] decode_immediate_data;
     control_type decode_control;
     
-    logic [31:0] execute_result;
+    logic [31:0] execute_alu_data;
     control_type execute_control;
+    logic [31:0] execute_memory_data;
     
-    logic [31:0] memory_result;
+    logic [31:0] memory_memory_data;
+    logic [31:0] memory_alu_data;
     control_type memory_control;
     
     logic [5:0] wb_reg_rd_id;
@@ -53,11 +55,13 @@ module cpu(
             id_ex_reg.control <= decode_control;
             
             ex_mem_reg.reg_rd_id <= id_ex_reg.reg_rd_id;
-            ex_mem_reg.data <= execute_result;
-            ex_mem_reg.control<= execute_control;
+            ex_mem_reg.control <= execute_control;
+            ex_mem_reg.alu_data <= execute_alu_data;
+            ex_mem_reg.memory_data <= execute_memory_data;
             
             mem_wb_reg.reg_rd_id <= ex_mem_reg.reg_rd_id;
-            mem_wb_reg.data <= memory_result;
+            mem_wb_reg.memory_data <= memory_memory_data;
+            mem_wb_reg.alu_data <= memory_alu_data;
             mem_wb_reg.control <= memory_control;
         end
     end
@@ -103,22 +107,25 @@ module cpu(
         .immediate_data(id_ex_reg.immediate_data),
         .control_in(id_ex_reg.control),
         .control_out(execute_control),
-        .result(execute_result)             
+        .alu_data(execute_alu_data),
+        .memory_data(execute_memory_data)          
     );
     
     
     mem_stage inst_mem_stage(
         .clk(clk), 
         .reset_n(reset_n),
-        .data(ex_mem_reg.data),
+        .alu_data_in(ex_mem_reg.alu_data),
+        .memory_data_in(ex_mem_reg.memory_data),
         .control_in(ex_mem_reg.control),
         .control_out(memory_control),
-        .data_out(memory_result)
+        .memory_data_out(memory_memory_data),
+        .alu_data_out(memory_alu_data)
     );
 
 
     assign wb_reg_rd_id = mem_wb_reg.reg_rd_id;
-    assign wb_result = mem_wb_reg.data;
     assign wb_write_back_en = mem_wb_reg.control.reg_write;
+    assign wb_result = mem_wb_reg.control.mem_read ? mem_wb_reg.memory_data : mem_wb_reg.alu_data;
     
 endmodule

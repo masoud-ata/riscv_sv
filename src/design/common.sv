@@ -26,7 +26,7 @@ package common;
         encoding_type encoding;
         logic alu_src;
         logic mem_read;
-        logic mem_write ;
+        logic mem_write;
         logic reg_write;
         logic mem_to_reg;
         logic is_branch;
@@ -64,15 +64,17 @@ package common;
     typedef struct packed
     {
         logic [5:0] reg_rd_id;
-        logic [31:0] data;
         control_type control;
+        logic [31:0] alu_data;
+        logic [31:0] memory_data;
     } ex_mem_type;
     
     
     typedef struct packed
     {
         logic [5:0] reg_rd_id;
-        logic [31:0] data;
+        logic [31:0] memory_data;
+        logic [31:0] alu_data;
         control_type control;
     } mem_wb_type;
 

@@ -11,7 +11,8 @@ module execute_stage(
     input [31:0] immediate_data,
     input control_type control_in,
     output control_type control_out,
-    output logic [31:0] result
+    output logic [31:0] alu_data,
+    output logic [31:0] memory_data
 );
 
     logic zero_flag;
@@ -34,9 +35,10 @@ module execute_stage(
         .left_operand(left_operand), 
         .right_operand(right_operand),
         .zero_flag(zero_flag),
-        .result(result)
+        .result(alu_data)
     );
     
     assign control_out = control_in;
+    assign memory_data = data2;
     
 endmodule
