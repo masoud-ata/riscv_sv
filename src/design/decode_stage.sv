@@ -7,6 +7,7 @@ module decode_stage(
     input clk,
     input reset_n,
     input instruction_type instruction,
+    input logic [31:0] pc,
     input logic write_en,
     input logic [5:0] write_id,
     input logic [31:0] write_data,

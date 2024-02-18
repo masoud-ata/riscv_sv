@@ -8,7 +8,7 @@ module cpu(
     input reset_n
 );
 
-    logic [4:0] program_mem_address = 0;
+    logic [31:0] program_mem_address = 0;
     logic program_mem_write_enable = 0;         
     logic [31:0] program_mem_write_data = 0; 
     logic [31:0] program_mem_read_data;
@@ -88,6 +88,7 @@ module cpu(
         .clk(clk), 
         .reset_n(reset_n),    
         .instruction(if_id_reg.instruction),
+        .pc(if_id_reg.pc),
         .write_en(wb_write_back_en),
         .write_id(wb_reg_rd_id),        
         .write_data(wb_result),

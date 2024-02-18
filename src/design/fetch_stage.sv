@@ -4,11 +4,11 @@
 module fetch_stage(
     input clk,
     input reset_n,
-    output logic [4:0] address,
+    output logic [31:0] address,
     input [31:0] data
 );
 
-    logic [4:0] pc_next, pc_reg;
+    logic [31:0] pc_next, pc_reg;
     
     
     always_ff @(posedge clk) begin
@@ -22,7 +22,7 @@ module fetch_stage(
         
         
     always_comb begin
-        pc_next = pc_reg + 1;      
+        pc_next = pc_reg + 4;      
     end
     
     
