@@ -7,7 +7,7 @@ module mem_stage(
     input [31:0] alu_data_in,
     input [31:0] memory_data_in,
     input control_type control_in,
-    input control_type control_out,
+    output control_type control_out,
     output logic [31:0] memory_data_out,
     output logic [31:0] alu_data_out
 );
